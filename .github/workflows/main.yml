@@ -15,7 +15,12 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Setup PowerShell
-      uses: actions/setup-powershell@v2
+      uses: PowerShell/setup-powershell@v1
 
-    - name: Check PowerShell script syntax
-      run: pwsh -command "& { Get-ChildItem *.ps1 | ForEach-Object { Write-Host 'Checking:' $_.Name; Invoke-Expression '.\'+$_.Name } }
+    - name: Run PowerShell script syntax check
+      shell: pwsh
+      run: |
+        Get-ChildItem *.ps1 | ForEach-Object {
+          Write-Host "Running syntax check for:" $_.Name
+          $null = Get-Command $_.FullName -ErrorAction Stop
+        }
